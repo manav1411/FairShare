@@ -1,18 +1,24 @@
 // components/GPT.tsx
 import React, { useEffect, useState } from 'react';
 
+interface Item {
+  item_name: string;
+  item_count: number;
+  items_price: number;
+}
+
 interface GPTProps {
   image: string;
-  onResult: (result: { item_name: string, item_count: number }[]) => void;
+  onResult: (result: Item[]) => void;
 }
 
 const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
-  const [response, setResponse] = useState<{ item_name: string, item_count: number }[]>([]);
+  const [response, setResponse] = useState<Item[]>([]);
 
   useEffect(() => {
     const fetchGPT = async () => {
       try {
-        const apiKey = "";
+        const apiKey = "ABC";
         const url = `https://api.openai.com/v1/chat/completions`;
 
         const requestOptions = {
@@ -26,9 +32,12 @@ const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
             messages: [
               {
                 "role": "user",
-                "response_format":{ "type": "json_object" },
+                "response_format": { "type": "json_object" },
                 "content": [
-                  {"type": "text", "text": 'This is meant to be an image of a receipt. For each item, can you extract the name and the number of items in format: {"item_name": "garlic bread", "item_count": 2}, and return all such items in an array. E.g. [{"item_name": "garlic bread", "item_count": 2}, {"item_name": "coke", "item_count": 4}, {"item_name": "Iced Tea", "item_count": 1}]. Return no other text. Only in 1 line. Ignore all non-item text. ONLY return the array. Absolutely no other text.'},
+                  {
+                    "type": "text",
+                    "text": 'This is meant to be an image of a receipt. For each item, can you extract the name, the number of items, and the price in format: {"item_name": "garlic bread", "item_count": 2, "items_price": 16.5}, and return all such items in an array. E.g. [{"item_name": "garlic bread", "item_count": 2, "items_price": 12.95}, {"item_name": "coke", "item_count": 4, "items_price": 32}, {"item_name": "Iced Tea", "item_count": 1, "items_price": 8}]. Return no other text. Only in 1 line. Ignore all non-item text. ONLY return the array. Absolutely no other text.'
+                  },
                   {
                     "type": "image_url",
                     "image_url": {
@@ -47,7 +56,7 @@ const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
 
         // Parse the response into the appropriate format
         if (data.choices && data.choices.length > 0) {
-          const items = JSON.parse(data.choices[0].message.content);
+          const items: Item[] = JSON.parse(data.choices[0].message.content);
           console.log(items);
           setResponse(items);
           onResult(items); // Pass the result to the parent component
@@ -65,7 +74,7 @@ const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
     if (image) {
       fetchGPT();
     }
-  }, [image]); // Dependency array to run effect on image change
+  }, [image]); // Only depend on image to trigger initial API call
 
   return (
     <div>

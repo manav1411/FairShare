@@ -1,0 +1,15 @@
+.qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 40vh; /* Adjust height as needed */
+  }
+  
+  .qr-container div {
+    text-align: center;
+    max-width: 400px; /* Adjust this width as needed */
+    margin: 0 auto; /* Center the div horizontally */
+    color: white;
+  }
+  

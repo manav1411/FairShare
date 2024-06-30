@@ -1,10 +1,15 @@
-// components/Editor.tsx
 import React, { useState, useEffect } from 'react';
 import './style.css'; // Import the CSS file
 
+interface Item {
+  item_name: string;
+  item_count: number;
+  items_price: number; // New field for item price
+}
+
 interface EditorProps {
-  items: { item_name: string, item_count: number }[];
-  setItems: React.Dispatch<React.SetStateAction<{ item_name: string, item_count: number }[]>>;
+  items: Item[];
+  setItems: React.Dispatch<React.SetStateAction<Item[]>>;
 }
 
 const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
@@ -28,6 +33,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
   const handleIncrement = (index: number) => {
     const updatedItems = [...items];
     updatedItems[index].item_count += 1;
+    updatedItems[index].items_price = updatedItems[index].items_price / (updatedItems[index].item_count - 1) * updatedItems[index].item_count;
     setItems(updatedItems);
   };
 
@@ -35,8 +41,25 @@ const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
     const updatedItems = [...items];
     if (updatedItems[index].item_count > 0) {
       updatedItems[index].item_count -= 1;
+      updatedItems[index].items_price = updatedItems[index].items_price / (updatedItems[index].item_count + 1) * updatedItems[index].item_count;
       setItems(updatedItems);
     }
+  };
+
+  const handlePriceChange = (index: number, newPrice: number) => {
+    const updatedItems = [...items];
+    updatedItems[index].items_price = newPrice;
+    setItems(updatedItems);
+  };
+
+  const handleAddItem = () => {
+    setItems([...items, { item_name: '', item_count: 1, items_price: 0 }]);
+  };
+
+  const handleDeleteItem = (index: number) => {
+    const updatedItems = [...items];
+    updatedItems.splice(index, 1);
+    setItems(updatedItems);
   };
 
   if (loading) {
@@ -61,9 +84,16 @@ const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
             <button onClick={() => handleDecrement(index)}>-</button>
             <span>{item.item_count}</span>
             <button onClick={() => handleIncrement(index)}>+</button>
+            <input
+              type="number"
+              value={item.items_price}
+              onChange={(e) => handlePriceChange(index, parseFloat(e.target.value))}
+            />
+            <button onClick={() => handleDeleteItem(index)}>Delete</button>
           </li>
         ))}
       </ul>
+      <button onClick={handleAddItem}>Add Item</button>
     </div>
   );
 };
