@@ -10,9 +10,10 @@ interface Item {
 interface EditorProps {
   items: Item[];
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
+  onClose: (finalResult: Item[]) => void; // Callback to close editor and pass final result
 }
 
-const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
+const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   const [loading, setLoading] = useState(true);
 
   // Simulate loading effect with useEffect
@@ -33,22 +34,39 @@ const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
   const handleIncrement = (index: number) => {
     const updatedItems = [...items];
     updatedItems[index].item_count += 1;
-    updatedItems[index].items_price = updatedItems[index].items_price / (updatedItems[index].item_count - 1) * updatedItems[index].item_count;
+    // Ensure item_count is not less than 1
+    if (updatedItems[index].item_count < 1) {
+      updatedItems[index].item_count = 1;
+    }
+    // Update price rounded to 2 decimal places
+    updatedItems[index].items_price = parseFloat(
+      (
+        (updatedItems[index].items_price / (updatedItems[index].item_count - 1)) *
+        updatedItems[index].item_count
+      ).toFixed(2)
+    );
     setItems(updatedItems);
   };
 
   const handleDecrement = (index: number) => {
     const updatedItems = [...items];
-    if (updatedItems[index].item_count > 0) {
+    if (updatedItems[index].item_count > 1) {
       updatedItems[index].item_count -= 1;
-      updatedItems[index].items_price = updatedItems[index].items_price / (updatedItems[index].item_count + 1) * updatedItems[index].item_count;
+      // Update price rounded to 2 decimal places
+      updatedItems[index].items_price = parseFloat(
+        (
+          (updatedItems[index].items_price / (updatedItems[index].item_count + 1)) *
+          updatedItems[index].item_count
+        ).toFixed(2)
+      );
       setItems(updatedItems);
     }
   };
 
   const handlePriceChange = (index: number, newPrice: number) => {
     const updatedItems = [...items];
-    updatedItems[index].items_price = newPrice;
+    // Round price to 2 decimal places
+    updatedItems[index].items_price = parseFloat(newPrice.toFixed(2));
     setItems(updatedItems);
   };
 
@@ -62,6 +80,10 @@ const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
     setItems(updatedItems);
   };
 
+  const handleSave = () => {
+    onClose(items); // Pass the final items array to the onClose callback
+  };
+
   if (loading) {
     return (
       <div className="loading">
@@ -72,7 +94,12 @@ const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
 
   return (
     <div className="editor-container">
-      <h2>Items from GPT</h2>
+      <div className="editor-header">
+        <div className="header-item">Name</div>
+        <div className="header-item">Quantity</div>
+        <div className="header-item">Price ($)</div>
+        <div className="header-item"></div>
+      </div>
       <ul>
         {items.map((item, index) => (
           <li key={index}>
@@ -87,13 +114,15 @@ const Editor: React.FC<EditorProps> = ({ items, setItems }) => {
             <input
               type="number"
               value={item.items_price}
+              step="0.01"
               onChange={(e) => handlePriceChange(index, parseFloat(e.target.value))}
             />
-            <button onClick={() => handleDeleteItem(index)}>Delete</button>
+            <button className="delete-button" onClick={() => handleDeleteItem(index)}>Delete</button>
           </li>
         ))}
       </ul>
       <button onClick={handleAddItem}>Add Item</button>
+      <button onClick={handleSave}>Save</button>
     </div>
   );
 };

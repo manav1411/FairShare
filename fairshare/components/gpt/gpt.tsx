@@ -18,7 +18,8 @@ const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
   useEffect(() => {
     const fetchGPT = async () => {
       try {
-        const apiKey = "ABC";
+        const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+        console.log(apiKey)
         const url = `https://api.openai.com/v1/chat/completions`;
 
         const requestOptions = {

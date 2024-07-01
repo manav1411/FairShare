@@ -1,0 +1,15 @@
+/* liveView.css */
+.live-view {
+    color: white; /* Sets all text color to white */
+  }
+  
+  /* Optionally, style list items */
+  .live-view ul {
+    list-style-type: none; /* Removes bullet points from list items */
+    padding: 0;
+  }
+  
+  .live-view li {
+    margin-bottom: 8px; /* Adds some space between list items */
+  }
+  

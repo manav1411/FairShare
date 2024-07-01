@@ -1,12 +1,28 @@
-/* components/Editor.css */
-
 .editor-container {
-  max-width: 600px; /* Adjust as per your design */
-  margin: 0 auto; /* Center align */
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.header-item {
+  flex: 1;
+  text-align: center;
+  color: white; /* Set title text color to white */
+}
+
+.header-item:nth-child(2) {
+  margin-left: 40px; /* Adjust margin to move Quantity title to the right */
 }
 
 ul {
@@ -15,49 +31,53 @@ ul {
 }
 
 li {
-  margin-bottom: 10px;
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
 }
 
-input[type="text"] {
+li input[type="text"],
+li input[type="number"],
+li button,
+li span {
   padding: 8px;
-  font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  flex: 1;
-  margin-right: 10px;
+  border-radius: 3px;
+  margin-right: 5px; /* Adjusted margin */
 }
 
 button {
-  padding: 8px 12px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  padding: 8px;
   border: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #2d93ff;
 }
 
-button:hover {
-  background-color: #0056b3;
+button.delete-button {
+  background-color: #ff5500; /* Red background for delete button */
+  color: #fff;
+}
+
+button.delete-button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
 }
 
 span {
-  padding: 8px 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin: 0 5px; /* Equal margin on both sides */
+  margin: 4 2px; /* Adjusted margin for quantity */
+  font-weight: bold;
+  background-color: #fff;
+  padding: 5px 8px;
+  border-radius: 3px;
 }
 
 .loading {
-  text-align: center;
-  padding: 20px;
   font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
+  color:#ffffff
 }
 
-  body {
-    color: #000000;
-  }
+body {
+  color: #000000;
+}
