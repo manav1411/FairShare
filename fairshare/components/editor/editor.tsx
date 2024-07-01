@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import Axios for making HTTP requests
 import './style.css'; // Import the CSS file
 
 interface Item {
@@ -66,7 +67,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   const handlePriceChange = (index: number, newPrice: number) => {
     const updatedItems = [...items];
     // Round price to 2 decimal places
-    updatedItems[index].items_price = parseFloat(newPrice.toFixed(2));
+    updatedItems[index].items_price = Math.round(newPrice * 100) / 100; // Round to 2 decimal places
     setItems(updatedItems);
   };
 
@@ -80,8 +81,15 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
     setItems(updatedItems);
   };
 
-  const handleSave = () => {
-    onClose(items); // Pass the final items array to the onClose callback
+  const handleSave = async () => {
+    try {
+      const response = await axios.post('/api/receipt', items);
+      console.log('Receipt saved:', response.data);
+      onClose(items); // Pass the final items array to the onClose callback
+    } catch (error) {
+      console.error('Error saving receipt:', error);
+      // Handle error as needed
+    }
   };
 
   if (loading) {
@@ -121,8 +129,10 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
           </li>
         ))}
       </ul>
-      <button onClick={handleAddItem}>Add Item</button>
-      <button onClick={handleSave}>Save</button>
+      <div className="button-container">
+        <button onClick={handleAddItem}>Add Item</button>
+        <button onClick={handleSave}>Save</button>
+      </div>
     </div>
   );
 };

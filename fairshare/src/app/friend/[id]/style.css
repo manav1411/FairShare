@@ -1,55 +1,207 @@
 /* style.css */
 
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #555;
-  }
-  
-  p {
-    font-size: 1.2rem;
-    line-height: 1.6;
-    color: #666;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    font-size: 1.1rem;
-    line-height: 1.4;
-    margin-bottom: 5px;
-  }
-  
-  a {
-    color: #007bff;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 10px;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
-  body {
-    color: #000;
-  }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #666;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+body {
+  color: #000;
+}
+
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
+
+
+.receipt-header span {
+  flex: 1;
+  text-align: center;
+}
+
+.item-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px; /* Add margin between rows */
+}
+
+.item-actions {
+  display: flex; /* Ensure buttons are inline */
+  align-items: center;
+  margin-left: 10px; /* Adjust as needed */
+}
+
+.total-divider {
+  border-top: 1px solid #ccc; /* Adds a divider line */
+  padding-top: 10px; /* Adjust padding as needed */
+  margin-top: 10px; /* Adjust margin as needed */
+}
+
+.right-align {
+  text-align: right;
+  display: block; /* Ensure the span behaves like a block element */
+  width: 100%;
+}
+
+.total-amount {
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.total-amount span {
+  flex: 1;
+}
+
+.total-amount .label {
+  text-align: left;
+}
+
+.total-amount .value {
+  text-align: right;
+}
+
+/* Set fixed widths for each column */
+.item-details span:first-child {
+  flex: 2; /* Adjust width for item name column */
+}
+
+.item-details span:nth-child(2),
+.item-details span:nth-child(3) {
+  flex: 1; /* Adjust width for total and your part columns */
+}
+
+a.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+a.button:hover {
+  background-color: #0056b3;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px; /* Adjust margin as needed */
+}
+
+.right-aligned {
+  text-align: right;
+}
+
+.right-aligned .btn-save {
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px; /* Adjust padding as needed */
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.right-aligned .btn-save:hover {
+  background-color: #0056b3;
+}
+
+.btn-decrement,
+.btn-increment {
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  padding: 8px 15px;
+  margin: 0 5px; /* Add margin around buttons */
+  border-radius: 8px;
+  transition: background-color 0.1s ease;
+}
+
+.btn-decrement:hover,
+.btn-increment:hover {
+  background-color: #0056b3;
+}
+
+
+.allocations-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.allocations-container h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.allocations-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.allocations-container li {
+  margin-top: 10px;
+}
+
+.allocations-container h4 {
+  margin-bottom: 5px;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.allocations-container ul li {
+  margin-top: 5px;
+  color: #777;
+}
+
+.allocations-container ul li:first-child {
+  margin-top: 0;
+}
+

@@ -3,7 +3,6 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
@@ -18,7 +17,6 @@
 .header-item {
   flex: 1;
   text-align: center;
-  color: white; /* Set title text color to white */
 }
 
 .header-item:nth-child(2) {
@@ -55,12 +53,12 @@ button {
 }
 
 button.delete-button {
-  background-color: #ff5500; /* Red background for delete button */
+  background-color: #ff6262; /* Red background for delete button */
   color: #fff;
 }
 
 button.delete-button:hover {
-  background-color: #0056b3; /* Darker shade on hover */
+  background-color: #ff1e1e; /* Darker shade on hover */
 }
 
 span {
@@ -75,9 +73,18 @@ span {
   font-size: 18px;
   text-align: center;
   margin-top: 20px;
-  color:#ffffff
 }
 
 body {
   color: #000000;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px; /* Adjust as needed */
+}
+
+li input[type="number"] {
+  width: 90px; /* Adjust width as needed */
 }
