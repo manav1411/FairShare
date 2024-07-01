@@ -1,5 +1,5 @@
-// components/GPT.tsx
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface Item {
   item_name: string;
@@ -8,80 +8,75 @@ interface Item {
 }
 
 interface GPTProps {
-  image: string;
+  image: File;
   onResult: (result: Item[]) => void;
 }
 
 const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
-  const [response, setResponse] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGPT = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-        console.log(apiKey)
-        const url = `https://api.openai.com/v1/chat/completions`;
+        // Convert image to base64
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = async () => {
+          const base64Image = reader.result as string;
+          const base64Data = base64Image.split(',')[1];
 
-        const requestOptions = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o', // Specify the model here
-            messages: [
-              {
-                "role": "user",
-                "response_format": { "type": "json_object" },
-                "content": [
-                  {
-                    "type": "text",
-                    "text": 'This is meant to be an image of a receipt. For each item, can you extract the name, the number of items, and the price in format: {"item_name": "garlic bread", "item_count": 2, "items_price": 16.5}, and return all such items in an array. E.g. [{"item_name": "garlic bread", "item_count": 2, "items_price": 12.95}, {"item_name": "coke", "item_count": 4, "items_price": 32}, {"item_name": "Iced Tea", "item_count": 1, "items_price": 8}]. Return no other text. Only in 1 line. Ignore all non-item text. ONLY return the array. Absolutely no other text.'
-                  },
-                  {
-                    "type": "image_url",
-                    "image_url": {
-                      "url": image, // Use the passed image prop here
-                    },
-                  },
-                ],
-              }
-            ],
-            max_tokens: 150,
-          })
+          const response = await axios.post(
+            'http://localhost:8080/openai_vision/process-receipt',
+            { image: base64Data },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          console.log("Response:", response);
+
+          if (response.data.result) {
+            try {
+              const items: Item[] = JSON.parse(response.data.result);
+              console.log("Raw result:", response.data.result);
+              console.log("Parsed items:", items);
+              onResult(items);
+            } catch (parseError) {
+              console.error("Error parsing result:", parseError);
+              console.log("Unparsed result:", response.data.result);
+              setError("Failed to parse API response");
+            }
+          } else {
+            throw new Error('No valid response from API');
+          }
         };
-
-        const res = await fetch(url, requestOptions);
-        const data = await res.json();
-
-        // Parse the response into the appropriate format
-        if (data.choices && data.choices.length > 0) {
-          const items: Item[] = JSON.parse(data.choices[0].message.content);
-          console.log(items);
-          setResponse(items);
-          onResult(items); // Pass the result to the parent component
-        } else {
-          console.error('No valid response from API');
-          // Handle no valid response state
-        }
-
       } catch (error) {
         console.error('Error fetching GPT response:', error);
-        // Handle error state
+        setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    if (image) {
+    if (image) { 
       fetchGPT();
     }
-  }, [image]); // Only depend on image to trigger initial API call
+  }, [image]);
 
-  return (
-    <div>
-      {/* Optionally display the response */}
-    </div>
-  );
+  if (isLoading) {
+    return <div>Processing image...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  return null;
 };
 
 export default GPT;
