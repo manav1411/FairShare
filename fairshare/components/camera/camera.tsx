@@ -4,7 +4,7 @@ import './style.css';
 
 interface CameraProps {
   children?: React.ReactNode;
-  onImageCapture: (imageData: string) => void;
+  onImageCapture: (imageData: File) => void;
 }
 
 const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
@@ -66,9 +66,23 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
     setIsCameraActive(true);
   };
 
+  const dataURLtoFile = (dataUrl: string, filename: string): File => {
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)![1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
   const handleContinue = () => {
     if (capturedImage) {
-      onImageCapture(capturedImage); // Pass captured image data to parent component
+      console.log('captured image: ', capturedImage);
+      const imageFile = dataURLtoFile(capturedImage, 'receipt.jpeg')
+      onImageCapture(imageFile); // Pass captured image data to parent component
     } else {
       console.error('No image captured.');
     }

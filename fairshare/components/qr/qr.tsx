@@ -11,7 +11,7 @@ const QR: React.FC<QRProps> = ({ link }) => {
   return (
     <div className="qr-container">
       <div>
-        <p>Ask friends To fill in</p>
+        <p>Scan to pay</p>
         <QRCode value={link} />
       </div>
     </div>
