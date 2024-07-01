@@ -4,7 +4,6 @@
 @tailwind utilities;
 
 body {
-  background-color: #fff; /* White background */
   color: #000; /* Black text */
   display: flex;
   justify-content: center;

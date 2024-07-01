@@ -28,19 +28,23 @@ export async function GET() {
 
 // POST: Update receipt data
 export async function POST(request: Request) {
-  const givenData = await request.json();
-
   try {
-    const { data, error } = await supabase.from('receipts').insert(givenData);
-    if (error) throw error;
+    // Delete all existing data from the 'receipts' table
+    const { error: deleteError } = await supabase.from('receipts').delete().neq("item_name", 0)
+    if (deleteError) throw deleteError;
+
+    // Insert new data provided in the request body
+    const givenData = await request.json();
+    const { data, error: insertError } = await supabase.from('receipts').insert(givenData);
+    if (insertError) throw insertError;
 
     return NextResponse.json({
       receiptData: data,
     });
   } catch (error) {
-    console.error('Error saving receipt data:', error);
+    console.error('Error saving or deleting receipt data:', error);
     return NextResponse.json({
-      error: 'Failed to save receipt data',
+      error: 'Failed to save or delete receipt data',
     }, { status: 500 }); // Set appropriate HTTP status code
   }
 }

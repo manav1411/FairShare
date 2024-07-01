@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Import Axios for making HTTP requests
-import './style.css'; // Import the CSS file
 
 interface Item {
   item_name: string;
@@ -83,69 +82,59 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch('/api/receipt', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Ensure you set the correct content type
-        },
-        body: JSON.stringify(items), // Convert items to JSON string
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to save receipt');
-      }
-  
-      const responseData = await response.json(); // Parse response data if needed
-  
-      console.log('Receipt saved:', responseData);
+      const response = await axios.post('/api/receipt', items);
+      console.log('Receipt saved:', response.data);
       onClose(items); // Pass the final items array to the onClose callback
     } catch (error) {
-      console.error('Error saving receipt:', error);
+      console.log('Error saving receipt:', error);
       // Handle error as needed
     }
   };
-  
 
   if (loading) {
     return (
-      <div className="loading">
-        Processing...
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-xl">Processing...</div>
       </div>
     );
   }
 
   return (
-    <div className="editor-container">
-      <div className="editor-header">
-        <div className="header-item">Name</div>
-        <div className="header-item">Quantity</div>
-        <div className="header-item">Price ($)</div>
-        <div className="header-item"></div>
+    <div className="p-4 bg-gray-100 rounded-lg shadow-md">
+      <div className="flex bg-gray-300 rounded-t-lg mb-4">
+        <div className="flex-1 p-3 text-lg font-bold text-gray-800">Name</div>
+        <div className="flex-1 p-3 text-lg font-bold text-gray-800">Quantity</div>
+        <div className="flex-1 p-3 text-lg font-bold text-gray-800">Price ($)</div>
+        <div className="p-3"></div>
       </div>
       <ul>
         {items.map((item, index) => (
-          <li key={index}>
+          <li key={index} className="flex items-center bg-white mb-2 p-3 rounded-lg shadow-md">
             <input
               type="text"
               value={item.item_name}
               onChange={(e) => handleNameChange(index, e.target.value)}
+              className="w-1/2 flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
-            <button onClick={() => handleDecrement(index)}>-</button>
-            <span>{item.item_count}</span>
-            <button onClick={() => handleIncrement(index)}>+</button>
+            <div className="ml-2 mr-2">
+              <button onClick={() => handleDecrement(index)} className="p-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">-</button>
+            <span className="p-2">{item.item_count}</span>
+            <button onClick={() => handleIncrement(index)} className="p-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">+</button>
+            </div>
             <input
               type="number"
               value={item.items_price}
               step="0.01"
               onChange={(e) => handlePriceChange(index, parseFloat(e.target.value))}
+              className="min-w-0.5 flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
-            <button className="delete-button" onClick={() => handleDeleteItem(index)}>Delete</button>
+            <button onClick={() => handleDeleteItem(index)} className="p-2 ml-2 bg-red-500 text-white rounded-md hover:bg-red-600">Delete</button>
           </li>
         ))}
       </ul>
-      <div className="button-container">
-        <button onClick={handleAddItem}>Add Item</button>
-        <button onClick={handleSave}>Save</button>
+      <div className="flex mt-4 justify-between">
+        <button onClick={handleAddItem} className="p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add Item</button>
+        <button onClick={handleSave} className="p-3 bg-green-500 text-white rounded-md hover:bg-green-600">Save</button>
       </div>
     </div>
   );

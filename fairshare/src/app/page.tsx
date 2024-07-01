@@ -14,6 +14,10 @@ interface ReceiptItem {
 
 interface Allocation {
   user_id: number;
+  users: {
+    id: number;
+    name: string;
+  };
   items_allocated: { item_name: string; item_count: number }[];
 }
 
@@ -44,11 +48,20 @@ const Home: React.FC = () => {
   const fetchAllocations = async () => {
     try {
       const response = await fetch('/api/receiptAllocations');
-      const data: { allocations: Allocation[] } = await response.json();
-      console.log('Allocations:', data.allocations);
-      setAllocations(data.allocations);
+      const data = await response.json();
+
+      console.log('API Response:', data);
+
+      // Check if the data structure is as expected
+      if (data.allocations) {
+        setAllocations(data.allocations);
+      } else {
+        console.error('Unexpected API response structure:', data);
+        setAllocations([]);
+      }
     } catch (error) {
       console.error('Error fetching allocations:', error);
+      setAllocations([]);
     }
   };
 
@@ -61,42 +74,57 @@ const Home: React.FC = () => {
   const getItemListDisplay = () => {
     if (finalResult) {
       return (
-        <ul>
-          {finalResult.map((item, index) => {
-            const allocatedUsers = allocations.filter(allocation => {
-              return allocation.items_allocated.some(alloc => alloc.item_name === item.item_name);
-            });
-
-            return (
-              <li key={index}>
-                <span>{item.item_name}</span>
-                <span>{item.item_count}x (${item.items_price.toFixed(2)})</span>
-                <ul>
-                  {allocatedUsers.map((allocation, idx) => (
-                    <li key={idx}>
-                      User ID: {allocation.user_id}, Allocated: {allocation.items_allocated.find(alloc => alloc.item_name === item.item_name)?.item_count || 0}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          <ul className="divide-y divide-gray-200">
+            {finalResult.map((item, index) => {
+              const allocatedUsers = allocations.filter(allocation =>
+                allocation.items_allocated.some(alloc => alloc.item_name === item.item_name)
+              );
+  
+              // Calculate total owed amount for the item
+              const totalOwed = (item.items_price - (item.items_price / item.item_count) * allocatedUsers.length).toFixed(2);
+  
+              return (
+                <li key={index} className="py-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-bold">{item.item_name}</span>
+                      <span className="ml-2 text-gray-500">{item.item_count}x (${item.items_price.toFixed(2)})</span>
+                    </div>
+                    <ul className="divide-y divide-gray-200">
+                      {allocatedUsers.map((allocation, idx) => (
+                        <li key={idx} className="py-2">
+                          <span className="text-sm text-gray-600">
+                            {allocation.users.name}: {allocation.items_allocated.find(alloc => alloc.item_name === item.item_name)?.item_count || 0}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <span className="ml-2 text-red-500">You Owe: ${totalOwed}</span> {/* New column */}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </>
       );
     }
     return null;
   };
-
+  
   return (
     <div>
       {!capturedImage ? (
         <Camera onImageCapture={handleImageCapture}>
-          <div>Scan your receipt</div>
+          <h1 className="text-4xl font-bold">Welcome to FairShare 👋</h1>
+          <h1 className="text-xl text-center">Scan receipt to get started...</h1>
         </Camera>
       ) : finalResult ? (
         <>
           {getItemListDisplay()}
-          <button onClick={handleGetAllocations}>Get Latest Allocations</button>
+          <button onClick={handleGetAllocations} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
+            Get Latest Allocations
+          </button>
           <QR link={"https://www.fairshared.me/friend"} />
         </>
       ) : (

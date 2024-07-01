@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import supabase from '../../../../supabaseClient';
 
-// GET: get list of all allocations
+// GET: get list of all allocations with user names
 export async function GET() {
   try {
-    const { data, error } = await supabase.from('allocations').select('*');
+    const { data, error } = await supabase
+      .from('allocations')
+      .select('*, users (id, name)')
+      .order('user_id', { ascending: true });
+
     if (error) throw error;
 
     return NextResponse.json({
@@ -17,6 +21,11 @@ export async function GET() {
     }, { status: 500 }); // Set appropriate HTTP status code
   }
 }
+
+
+
+
+
 
 
 

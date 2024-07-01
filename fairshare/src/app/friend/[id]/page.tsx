@@ -1,12 +1,3 @@
-
-
-// (call /api/receipt GET req whenever it is changed. need to 'subscribe' to changes somehow.)
-
-// implement and call component(pass in [id]) that:
-// displays allocation by calling /api/receiptAllocations GET request.
-// it should print out a coloured list of items, with grey being 'unallocated', and each user having a different colour. 
-//if say userA picked 1 burger, and userB picked 1 burger, and the receipt had 3, 1/3 of the burger item should be userA coloured, 1/3 should be userB coloured, and 1/3 should be grey.
-
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -126,7 +117,7 @@ const FriendPage: React.FC = () => {
 
   const getItemBackgroundColor = (item: ReceiptItem): string => {
     const percentageAllocated = calculateAllocationPercentage(item);
-    return `linear-gradient(90deg, #4B4B4B ${percentageAllocated}%, #ffffff ${percentageAllocated}%)`;
+    return `linear-gradient(90deg, #a3a3a3 ${percentageAllocated}%, #ffffff ${percentageAllocated}%)`;
   };
 
   return (

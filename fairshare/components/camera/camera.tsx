@@ -1,6 +1,4 @@
-// components/Camera.tsx
 import React, { useRef, useEffect, useState } from 'react';
-import './style.css';
 
 interface CameraProps {
   children?: React.ReactNode;
@@ -79,22 +77,27 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
   }
 
   return (
-    <div className="camera-container">
-      {children && <div className="camera-header">{children}</div>}
-      {isCameraActive ? (
-        <video ref={videoRef} autoPlay className="camera-video" />
-      ) : (
-        capturedImage && <img src={capturedImage} alt="Captured" className="captured-image" />
-      )}
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
-      <div className="camera-buttons">
+    <div className="flex flex-col items-center">
+      {children && <div className="mb-4">{children}</div>}
+      <div className="relative w-full max-w-full">
         {isCameraActive ? (
-          <button className="camera-button" onClick={handleCapture}>Capture</button>
+          <video ref={videoRef} autoPlay className="w-full rounded-md shadow-2xl" />
         ) : (
-          <div>
-            <button className="camera-button" onClick={handleRetake}>Retake</button>
-            <button className="camera-button" onClick={handleContinue}>Continue</button>
-          </div>
+          capturedImage && <img src={capturedImage} alt="Captured" className="w-full rounded-md shadow-2xl" />
+        )}
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-0" />
+      </div>
+      <div className="flex mt-4 space-x-4">
+        {isCameraActive ? (
+          <button className=" text-2xl bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
+            onClick={handleCapture}>Capture 📸</button>
+        ) : (
+          <>
+            <button className="text-2xl bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
+              onClick={handleRetake}>Retake</button>
+            <button className="text-2xl bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
+              onClick={handleContinue}>Continue</button>
+          </>
         )}
       </div>
     </div>
