@@ -97,7 +97,7 @@ const Home: React.FC = () => {
         <>
           {getItemListDisplay()}
           <button onClick={handleGetAllocations}>Get Latest Allocations</button>
-          <QR link={"http://localhost:3000/friend"} />
+          <QR link={"https://www.fairshared.me/friend"} />
         </>
       ) : (
         <>

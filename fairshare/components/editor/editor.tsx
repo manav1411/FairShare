@@ -83,14 +83,28 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post('/api/receipt', items);
-      console.log('Receipt saved:', response.data);
+      const response = await fetch('/api/receipt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Ensure you set the correct content type
+        },
+        body: JSON.stringify(items), // Convert items to JSON string
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to save receipt');
+      }
+  
+      const responseData = await response.json(); // Parse response data if needed
+  
+      console.log('Receipt saved:', responseData);
       onClose(items); // Pass the final items array to the onClose callback
     } catch (error) {
       console.error('Error saving receipt:', error);
       // Handle error as needed
     }
   };
+  
 
   if (loading) {
     return (
