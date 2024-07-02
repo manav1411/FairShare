@@ -5,6 +5,7 @@ import Camera from '../../components/camera/camera';
 import GPT from '../../components/gpt/gpt';
 import QR from '../../components/qr/qr';
 import Editor from '../../components/editor/editor';
+import supabase from '../../supabaseClient';
 
 interface ReceiptItem {
   item_name: string;
@@ -31,6 +32,20 @@ const Home: React.FC = () => {
     if (finalResult) {
       fetchAllocations();
     }
+    supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'allocations',
+        },
+        (payload) => {
+          fetchAllocations();
+        }
+      )
+      .subscribe()
   }, [finalResult]);
 
   const handleImageCapture = (imageData: string) => {
@@ -80,9 +95,15 @@ const Home: React.FC = () => {
               const allocatedUsers = allocations.filter(allocation =>
                 allocation.items_allocated.some(alloc => alloc.item_name === item.item_name)
               );
-  
-              // Calculate total owed amount for the item
-              const totalOwed = (item.items_price - (item.items_price / item.item_count) * allocatedUsers.length).toFixed(2);
+
+            // Calculate total allocated count for the item
+            const totalAllocatedCount = allocatedUsers.reduce((acc, allocation) => {
+              const alloc = allocation.items_allocated.find(alloc => alloc.item_name === item.item_name);
+              return acc + (alloc ? alloc.item_count : 0);
+            }, 0);
+
+            // Calculate total owed amount for the item
+            const totalOwed = (item.items_price - (item.items_price / item.item_count) * totalAllocatedCount).toFixed(2)
   
               return (
                 <li key={index} className="py-4">
@@ -122,9 +143,6 @@ const Home: React.FC = () => {
       ) : finalResult ? (
         <>
           {getItemListDisplay()}
-          <button onClick={handleGetAllocations} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
-            Get Latest Allocations
-          </button>
           <QR link={"https://www.fairshared.me/friend"} />
         </>
       ) : (

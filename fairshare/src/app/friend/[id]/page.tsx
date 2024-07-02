@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import './style.css';
+import supabase from '../../../../supabaseClient';
 
 interface ReceiptItem {
   item_name: string;
@@ -47,6 +48,20 @@ const FriendPage: React.FC = () => {
       }
     };
 
+    supabase
+    .channel('table-db-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'allocations',
+      },
+      (payload) => {
+        handleGetAllocations();
+      }
+    )
+    .subscribe()
     fetchReceiptData();
   }, []);
 
@@ -58,7 +73,7 @@ const FriendPage: React.FC = () => {
       });
     }
   };
-
+  
   const handleDecrement = (item_name: string) => {
     if (selectedItems[item_name] > 0) {
       setSelectedItems({
@@ -67,6 +82,10 @@ const FriendPage: React.FC = () => {
       });
     }
   };
+  
+  useEffect(() => {
+    handleSaveAllocations();
+  }, [selectedItems]);
 
   const handleGetAllocations = async () => {
     try {
@@ -163,9 +182,6 @@ const FriendPage: React.FC = () => {
         </div>
       </div>
       <br />
-      <div className="right-aligned">
-        <button className="btn-save" onClick={handleGetAllocations}>Get Allocations</button>
-      </div>
     </div>
   );
 };
