@@ -1,16 +1,14 @@
 import React from 'react';
 import QRCode from 'react-qr-code';
 
-import './style.css'; // Import your CSS file
-
 interface QRProps {
   link: string;
 }
 
 const QR: React.FC<QRProps> = ({ link }) => {
   return (
-    <div className="qr-container">
-      <div>
+    <div className="flex flex-col items-center justify-center">
+      <div className="text-center max-w-md mx-auto">
         <p>Ask friends To fill in</p>
         <QRCode value={link} />
       </div>

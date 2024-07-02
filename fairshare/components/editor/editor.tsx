@@ -10,17 +10,18 @@ interface Item {
 interface EditorProps {
   items: Item[];
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
-  onClose: (finalResult: Item[]) => void; // Callback to close editor and pass final result
+  onClose: (finalResult: Item[], beemName: string) => void; // Callback to close editor and pass final result and beem_name
 }
 
 const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   const [loading, setLoading] = useState(true);
+  const [beemName, setBeemName] = useState('');
 
   // Simulate loading effect with useEffect
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1500); // Simulate loading time
+    }, 3000); // Simulate loading time
 
     return () => clearTimeout(timer);
   }, []);
@@ -83,8 +84,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   const handleSave = async () => {
     try {
       const response = await axios.post('/api/receipt', items);
-      console.log('Receipt saved:', response.data);
-      onClose(items); // Pass the final items array to the onClose callback
+      onClose(items, beemName); // Pass the final items array and beem_name to the onClose callback
     } catch (error) {
       console.log('Error saving receipt:', error);
       // Handle error as needed
@@ -94,7 +94,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">Processing...</div>
+        <div className="text-xl">Loading...</div>
       </div>
     );
   }
@@ -116,11 +116,12 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
               onChange={(e) => handleNameChange(index, e.target.value)}
               className="w-1/2 flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
-            <div className="ml-2 mr-2">
-              <button onClick={() => handleDecrement(index)} className="p-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">-</button>
-            <span className="p-2">{item.item_count}</span>
-            <button onClick={() => handleIncrement(index)} className="p-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">+</button>
+            <div className="flex items-center mr-2 ml-2">
+              <button onClick={() => handleDecrement(index)} className="btn-decrement px-3 py-1 rounded-lg text-2xl p-2 bg-blue-500 text-white hover:bg-blue-600">-</button>
+              <span className="mx-2">{item.item_count}</span>
+              <button onClick={() => handleIncrement(index)} className="btn-decrement px-3 py-1 text-2xl p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">+</button>
             </div>
+  
             <input
               type="number"
               value={item.items_price}
@@ -134,10 +135,17 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
       </ul>
       <div className="flex mt-4 justify-between">
         <button onClick={handleAddItem} className="p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add Item</button>
-        <button onClick={handleSave} className="p-3 bg-green-500 text-white rounded-md hover:bg-green-600">Save</button>
+        <input
+          type="text"
+          value={beemName}
+          onChange={(e) => setBeemName(e.target.value)}
+          placeholder="Enter your Beem"
+          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+        />
+        <button onClick={handleSave} disabled={!beemName} className={`p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 ${!beemName && 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'}`} title={!beemName ? "Please enter your Beem name to continue" : ""}>Continue</button>
       </div>
     </div>
   );
-};
+}  
 
 export default Editor;

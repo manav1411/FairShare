@@ -95,7 +95,7 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
           <>
             <button className="text-2xl bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
               onClick={handleRetake}>Retake</button>
-            <button className="text-2xl bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
+            <button className="text-2xl bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
               onClick={handleContinue}>Continue</button>
           </>
         )}

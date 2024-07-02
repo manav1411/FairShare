@@ -36,7 +36,7 @@ const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
                 "content": [
                   {
                     "type": "text",
-                    "text": 'This is meant to be an image of a receipt. For each item, can you extract the name, the number of items, and the price in format: {"item_name": "garlic bread", "item_count": 2, "items_price": 16.5}, and return all such items in an array. E.g. [{"item_name": "garlic bread", "item_count": 2, "items_price": 12.95}, {"item_name": "coke", "item_count": 4, "items_price": 32}, {"item_name": "Iced Tea", "item_count": 1, "items_price": 8}]. Return no other text. Only in 1 line. Ignore all non-item text. ONLY return the array. Absolutely no other text.'
+                    "text": 'This is meant to be an image of a receipt. For each item, can you extract the name, the number of items, and the price in format: {"item_name": "garlic bread", "item_count": 2, "items_price": 16.5}, and return all such items in an array. E.g. [{"item_name": "garlic bread", "item_count": 2, "items_price": 12.95}, {"item_name": "coke", "item_count": 4, "items_price": 32}, {"item_name": "Iced Tea", "item_count": 1, "items_price": 8}]. Make the Items capitalise the first letter from each word only. Return no other text. Only in 1 line. Ignore all non-item text. ONLY return the array. Absolutely no other text. '
                   },
                   {
                     "type": "image_url",
@@ -57,7 +57,6 @@ const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
         // Parse the response into the appropriate format
         if (data.choices && data.choices.length > 0) {
           const items: Item[] = JSON.parse(data.choices[0].message.content);
-          console.log(items);
           setResponse(items);
           onResult(items); // Pass the result to the parent component
         } else {
