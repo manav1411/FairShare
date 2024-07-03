@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import supabase from '../../../../supabaseClient';
 
-
 // initial receipt data
 let receiptData: Array<{
     item_name: string;
@@ -9,7 +8,7 @@ let receiptData: Array<{
     items_price: number;
 }> = [];
 
-// GET: Fetch receipt data
+// GET: receipt data
 export async function GET() {
   try {
     const { data, error } = await supabase.from('receipts').select('*');
@@ -22,14 +21,14 @@ export async function GET() {
     console.error('Error fetching receipt data:', error);
     return NextResponse.json({
       error: 'Failed to fetch receipt data',
-    }, { status: 500 }); // Set appropriate HTTP status code
+    }, { status: 500 });
   }
 }
 
-// POST: Update receipt data
+// POST: receipt data
 export async function POST(request: Request) {
   try {
-    // Delete all existing data from all tables
+    //delete all existing data from all tables
     const { error: deleteError1 } = await supabase.from('receipts').delete().neq("item_name", 0)
     if (deleteError1) throw deleteError1;
     const { error: deleteError2 } = await supabase.from('allocations').delete().neq("user_id", 0)
@@ -37,9 +36,7 @@ export async function POST(request: Request) {
     const { error: deleteError3 } = await supabase.from('users').delete().neq("id", 0)
     if (deleteError3) throw deleteError3;
 
-
-
-    // Insert new data provided in the request body
+    // insert new data provided in req body
     const givenData = await request.json();
     const { data, error: insertError } = await supabase.from('receipts').insert(givenData);
     if (insertError) throw insertError;
@@ -51,6 +48,6 @@ export async function POST(request: Request) {
     console.error('Error saving or deleting receipt data:', error);
     return NextResponse.json({
       error: 'Failed to save or delete receipt data',
-    }, { status: 500 }); // Set appropriate HTTP status code
+    }, { status: 500 });
   }
 }

@@ -7,7 +7,7 @@ const FriendPage: React.FC = () => {
   const [username, setUsername] = useState('');
 
   useEffect(() => {
-    // Fetch username from the current URL
+    //get username from current URL
     const getUsernameFromUrl = () => {
       const currentUrl = window.location.pathname;
       const parts = currentUrl.split('/');
@@ -27,13 +27,13 @@ const FriendPage: React.FC = () => {
 
   const handleJoin = async () => {
     try {
-      // Fetch the new user ID from the API with the name parameter
+      //get new userID from API with name parameter
       const response = await fetch(`/api/users?name=${encodeURIComponent(name)}`);
       const data = await response.json();
 
       if (response.ok) {
         const newUserId = data.newUserId;
-        // Redirect to the new URL with the user ID and name
+        //redirect to new URL with userID and name
         window.location.href = `/friend/${username}/${newUserId}/?name=${encodeURIComponent(name)}`;
       } else {
         console.error('Error:', data.error);
@@ -51,7 +51,7 @@ const FriendPage: React.FC = () => {
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        onKeyPress={handleKeyPress} // Handle Enter key press
+        onKeyPress={handleKeyPress} //enter Key pressed = join
         placeholder="John Doe 🫡"
         className="w-full p-3 text-lg mb-4 border rounded outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
       />

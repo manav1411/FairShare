@@ -27,10 +27,11 @@ const Home: React.FC = () => {
   const [finalResult, setFinalResult] = useState<ReceiptItem[] | null>(null);
   const [allocations, setAllocations] = useState<Allocation[]>([]);
   const [beemName, setBeemName] = useState<string>('');
-  const [showQR, setShowQR] = useState(true); // State to control visibility of QR code
+  const [showQR, setShowQR] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const toggleQRVisibility = () => {
-    setShowQR((prevShowQR) => !prevShowQR); // Toggle showQR state
+    setShowQR((prevShowQR) => !prevShowQR);
   };
 
   useEffect(() => {
@@ -55,15 +56,17 @@ const Home: React.FC = () => {
 
   const handleImageCapture = (imageData: string) => {
     setCapturedImage(imageData);
+    setLoading(true);
   };
 
   const handleGPTResult = (result: { item_name: string; item_count: number; items_price: number }[]) => {
     setGptResult(result);
+    setLoading(false);
   };
 
   const handleEditorClose = (finalResult: ReceiptItem[], beemName: string) => {
     setFinalResult(finalResult);
-    setBeemName(beemName); // Update beemName state when closing the editor
+    setBeemName(beemName);
   };
 
   const fetchAllocations = async () => {
@@ -71,7 +74,7 @@ const Home: React.FC = () => {
       const response = await fetch('/api/receiptAllocations');
       const data = await response.json();
 
-      // Check if the data structure is as expected
+      //check if response in expected JSON format
       if (data.allocations) {
         setAllocations(data.allocations);
       } else {
@@ -92,11 +95,11 @@ const Home: React.FC = () => {
 
   const calculateUserAllocations = () => {
     const userAllocations: { [key: number]: { name: string; claimed: number } } = {};
-  
+
     allocations.forEach((allocation) => {
       const userId = allocation.user_id;
       const userName = allocation.users.name;
-  
+
       const claimedAmount = allocation.items_allocated.reduce((acc, alloc) => {
         const item = finalResult?.find((item) => item.item_name === alloc.item_name);
         if (item) {
@@ -104,7 +107,7 @@ const Home: React.FC = () => {
         }
         return acc;
       }, 0);
-  
+
       if (claimedAmount > 0) {
         if (userAllocations[userId]) {
           userAllocations[userId].claimed += claimedAmount;
@@ -113,28 +116,28 @@ const Home: React.FC = () => {
         }
       }
     });
-  
+
     return Object.values(userAllocations);
   };
-  
+
 
   const getItemListDisplay = () => {
     if (finalResult) {
-      // Calculate total amount owed
+      //total amount owed
       let totalOwed:any = 0;
       finalResult.forEach((item) => {
         const allocatedUsers = allocations.filter((allocation) =>
           allocation.items_allocated.some((alloc) => alloc.item_name === item.item_name)
         );
-  
+
         const totalAllocatedCount = allocatedUsers.reduce((acc, allocation) => {
           const alloc = allocation.items_allocated.find((alloc) => alloc.item_name === item.item_name);
           return acc + (alloc ? alloc.item_count : 0);
         }, 0);
-  
+
         totalOwed += parseFloat((item.items_price - (item.items_price / item.item_count) * totalAllocatedCount).toFixed(2));
       });
-  
+
       return (
         <div>
           <div className="flex justify-end mb-0">
@@ -170,7 +173,7 @@ const Home: React.FC = () => {
                   (item.items_price / item.item_count) * totalAllocatedCount
                 ).toFixed(2);
   
-                // Determine the class based on the totalOwed value
+                //class based on the totalOwed value
                 const moneyTextClass = parseFloat(totalOwed) === 0 ? 'text-gray-500' : 'text-red-500 font-normal';
   
                 return (
@@ -211,7 +214,15 @@ const Home: React.FC = () => {
     }
     return null;
   };
-  
+
+  const LoadingScreen = () => (
+    <div className="fixed inset-0 flex items-center justify-center">
+      <div className="flex items-center space-x-2">
+        <div className="h-5 w-5 bg-blue-500 rounded-full animate-ping"></div>
+        <div className="text-2xl">Oliver is Reading that...</div>
+      </div>
+    </div>
+  );
 
   const getUserAllocationsDisplay = () => {
     const userAllocations = calculateUserAllocations();
@@ -235,7 +246,8 @@ const Home: React.FC = () => {
   const qrCodeUrl = `https://www.fairshared.me/friend/${encodeURIComponent(beemName)}/`;
 
   return (
-    <div className="min-h-screen display: inline-block flex-col items-center justify-center p-6 max-h-screen overflow-y-auto ">
+    <div className="min-h-screen display: inline-block flex-col items-center justify-center p-6 max-h-screen overflow-y-auto">
+      {loading && <LoadingScreen />} {/* Add this line */}
       {!capturedImage ? (
         <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-lg">
           <Camera onImageCapture={handleImageCapture}>
@@ -272,6 +284,7 @@ const Home: React.FC = () => {
       )}
     </div>
   );
+  
 };
 
 export default Home;

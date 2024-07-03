@@ -13,7 +13,7 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
 
   useEffect(() => {
-    setIsClient(true); // This component is rendered on the client
+    setIsClient(true); // rendered on the client
   }, []);
 
   useEffect(() => {
@@ -53,8 +53,8 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
         context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
         const imageData = canvasRef.current.toDataURL('image/png');
         setCapturedImage(imageData);
-        setIsCameraActive(false); // Turn off the camera
-        stopCamera(); // Stop the camera stream
+        setIsCameraActive(false);
+        stopCamera();
       }
     }
   };
@@ -74,8 +74,8 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsCameraActive(false); // Turn off the camera
-    stopCamera(); // Stop the camera stream
+    setIsCameraActive(false);
+    stopCamera();
     const file = event.target.files?.[0];
     if (file) {
       if (file.type === 'image/png' || file.type === 'image/jpeg') {
@@ -93,8 +93,8 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    setIsCameraActive(false); // Turn off the camera
-    stopCamera(); // Stop the camera stream
+    setIsCameraActive(false);
+    stopCamera();
     event.preventDefault();
     const file = event.dataTransfer.files[0];
     if (file) {
@@ -103,8 +103,8 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
         reader.onload = (e) => {
           const imageData = e.target?.result as string;
           setCapturedImage(imageData);
-          setIsCameraActive(false); // Turn off the camera
-          stopCamera(); // Stop the camera stream
+          setIsCameraActive(false);
+          stopCamera();
         };
         reader.readAsDataURL(file);
       } else {
@@ -122,7 +122,7 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
   };
 
   if (!isClient) {
-    return null; // Render nothing on the server
+    return null; //render nothing on server
   }
 
   return (
@@ -189,13 +189,11 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
           </>
         )}
       </div>
-      {/* Drag and drop text outside the button container */}
       <div className="flex items-center justify-center text-gray-600 text-lg mt-4">
         Drag and drop images here
       </div>
     </div>
   );
-  
 };
 
 export default Camera;

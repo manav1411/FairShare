@@ -15,7 +15,7 @@ const QR: React.FC<QRProps> = ({ link }) => {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 1500); // Reset copied state after 1.5 seconds
+      }, 1500);
     } catch (err) {
       console.error('Failed to copy:', err);
     }
@@ -24,7 +24,7 @@ const QR: React.FC<QRProps> = ({ link }) => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="text-center max-w-md mx-auto">
-        <p>Ask friends to fill in:</p>
+        <p>Ask friends to scan:</p>
         <div className="relative flex flex-col items-center justify-center">
           <div className="mb-4 relative flex items-center justify-center">
             {copied && (

@@ -14,18 +14,10 @@ interface EditorProps {
 }
 
 const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
-  const [loading, setLoading] = useState(true);
   const [beemName, setBeemName] = useState('');
 
-  // Simulate loading effect with useEffect
   useEffect(() => {
-    // Check if items are empty to determine loading state
-    if (items.length === 0) {
-      setLoading(true); // Set loading to true if items are empty
-    } else {
-      setLoading(false); // Set loading to false if items are not empty
-    }
-  }, [items]); // Run effect whenever items change
+  }, [items]);
 
   const handleNameChange = (index: number, newName: string) => {
     const updatedItems = [...items];
@@ -36,11 +28,11 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   const handleIncrement = (index: number) => {
     const updatedItems = [...items];
     updatedItems[index].item_count += 1;
-    // Ensure item_count is not less than 1
+    //ensure item_count is >= 1
     if (updatedItems[index].item_count < 1) {
       updatedItems[index].item_count = 1;
     }
-    // Update price rounded to 2 decimal places
+    //round price to 2dp
     updatedItems[index].items_price = parseFloat(
       (
         (updatedItems[index].items_price / (updatedItems[index].item_count - 1)) *
@@ -54,7 +46,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
     const updatedItems = [...items];
     if (updatedItems[index].item_count > 1) {
       updatedItems[index].item_count -= 1;
-      // Update price rounded to 2 decimal places
+      //round price to 2dp
       updatedItems[index].items_price = parseFloat(
         (
           (updatedItems[index].items_price / (updatedItems[index].item_count + 1)) *
@@ -67,7 +59,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
 
   const handlePriceChange = (index: number, newPrice: number) => {
     const updatedItems = [...items];
-    // Round price to 2 decimal places
+    //round price to 2dp
     updatedItems[index].items_price = Math.round(newPrice * 100) / 100;
     setItems(updatedItems);
   };
@@ -88,20 +80,9 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
       onClose(items, beemName);
     } catch (error) {
       console.log('Error saving receipt:', error);
-      // Handle error as needed
     }
   };
 
-  if (loading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <div className="text-2xl">Loading</div>
-          <div className="h-5 w-5 bg-blue-500 rounded-full animate-ping"></div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-4 bg-gray-100 rounded-lg shadow-md">
@@ -131,7 +112,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
               <span className="mx-2">{item.item_count}</span>
               <button onClick={() => handleIncrement(index)} className="btn-decrement px-3 py-1 text-2xl p-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">+</button>
             </div>
-  
+
             <input
               type="number"
               value={item.items_price}
@@ -155,9 +136,9 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
             className="w-full md:w-auto flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 text-center max-w-44"
           />
         </div>
-        <button 
-          onClick={handleSave} 
-          disabled={!beemName} 
+        <button
+          onClick={handleSave}
+          disabled={!beemName}
           className={`p-3 ${beemName ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'} text-white rounded-md`} 
           title={!beemName ? "Please enter your Beem name to continue" : ""}
         >
@@ -166,6 +147,6 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
       </div>
     </div>
   );
-}  
+}
 
 export default Editor;

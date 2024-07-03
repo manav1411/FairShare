@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import supabase from '../../../../supabaseClient';
 
-// GET: get list of all allocations with user names
+// GET: list of all allocations with user names
 export async function GET() {
   try {
     const { data, error } = await supabase
@@ -18,26 +18,19 @@ export async function GET() {
     console.error('Error fetching allocations:', error);
     return NextResponse.json({
       error: 'Failed to fetch allocations',
-    }, { status: 500 }); // Set appropriate HTTP status code
+    }, { status: 500 });
   }
 }
 
 
-
-
-
-
-
-
-
-// POST: Handle user submission of claimed items for allocations
+// POST: user submission of claimed items for allocations
 export async function POST(request: Request) {
   try {
-    // Parse the incoming JSON data from the request
+    //parse incoming JSON data from req
     const requestData = await request.json();
     const { userId, itemsToAllocate } = requestData;
 
-    // Fetch the existing allocation data for the userId, if any
+    //fetch existing allocation data for the userId, if any
     const { data: existingData, error: fetchError } = await supabase
       .from('allocations')
       .select('*')
@@ -45,9 +38,9 @@ export async function POST(request: Request) {
 
     if (fetchError) throw fetchError;
 
-    // Determine whether to insert or update based on existing data
+    //determine insert or update based on existing data
     if (existingData && existingData.length > 0) {
-      // Update existing row with new items_allocated JSON
+      //update existing row with new items_allocated JSON
       const { data: updateData, error: updateError } = await supabase
         .from('allocations')
         .update({
@@ -62,7 +55,7 @@ export async function POST(request: Request) {
         updatedData: updateData,
       });
     } else {
-      // Insert a new row for the userId with items_allocated JSON
+      //insert a new row for the userId with items_allocated JSON
       const { data: insertData, error: insertError } = await supabase
         .from('allocations')
         .insert([
@@ -83,6 +76,6 @@ export async function POST(request: Request) {
     console.error('Error handling allocation:', error);
     return NextResponse.json({
       error: 'Failed to handle allocation',
-    }, { status: 500 }); // Set appropriate HTTP status code
+    }, { status: 500 });
   }
 }

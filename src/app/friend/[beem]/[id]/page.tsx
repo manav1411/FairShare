@@ -57,11 +57,11 @@ const FriendPage: React.FC = () => {
       }
     };
 
-    // Fetch allocations when component mounts
+    //fetch allocations when component 1st called
     handleGetAllocations();
     fetchReceiptData();
 
-    // Subscription logic remains the same
+    //subscription logic
     supabase
       .channel('table-db-changes')
       .on(
@@ -79,10 +79,10 @@ const FriendPage: React.FC = () => {
 
     // Fetch and set userName once when component mounts
     const pathArray = window.location.pathname.split('/');
-    const userFromPath = pathArray[2]; // Assuming the second element in path is the user name
+    const userFromPath = pathArray[2]; //2nd element in path is user name
     setUserName(userFromPath);
 
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+  }, []); //empty dependency array = effect runs only once
 
   const handleIncrement = (item_name: string) => {
     const item = receiptData.find(item => item.item_name === item_name);
@@ -110,11 +110,11 @@ const FriendPage: React.FC = () => {
   }, [selectedItems]);
 
   const handleSaveAllocations = async () => {
-    const userId = window.location.pathname.split('/').pop(); // Get the last segment of the path
+    const userId = window.location.pathname.split('/').pop(); //get last part of URL path
 
-    // Filter out items with item_count 0 or less
+    //filer out items w item_count <= 0
     const itemsToAllocate = Object.entries(selectedItems)
-      .filter(([item_name, item_count]) => item_count >= 1) // Adjust condition as needed
+      .filter(([item_name, item_count]) => item_count >= 1)
       .map(([item_name, item_count]) => ({ item_name, item_count }));
 
     try {
@@ -125,7 +125,6 @@ const FriendPage: React.FC = () => {
         },
         body: JSON.stringify({ userId, itemsToAllocate }),
       });
-      // Handle response as needed
     } catch (error) {
       console.error('Error saving allocations:', error);
     }
@@ -219,8 +218,7 @@ const FriendPage: React.FC = () => {
       </div>
     </div>
   );
-  
-}  
+} 
 
 export default FriendPage;
 
