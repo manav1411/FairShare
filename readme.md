@@ -11,13 +11,17 @@ npm run dev
 
 
 # Tech Stack
-Hosting: Vercel, namecheap (domain name)
-Frontend: TSX, React, Next.js, TailwindCSS
-Backend: Node.js (via Node.js)
-database: Supabase
+- Hosting: Vercel, namecheap (domain name)
+- Frontend: TSX, React, Next.js, TailwindCSS
+- Backend: Node.js (via Node.js)
+- database: Supabase
 
 # Cool Tech Used
-SupaBase real-time database, to give live updates to main user and friends
+- SupaBase real-time database, to give live updates to main user and friends
+- Publisher-Subscriber model
+- Dynamic Linking
+- private APIs (our secret sauce)
+- dynamic QR code generation
 
 
 
