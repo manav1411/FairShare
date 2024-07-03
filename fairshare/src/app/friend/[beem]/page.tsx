@@ -1,21 +1,23 @@
-//QR code leads to this page
-
 "use client";
-import React, { useState } from 'react';
-import './style.css'; // Adjust the path as per your project structure
+import React, { useState, useEffect } from 'react';
 
 const FriendPage: React.FC = () => {
 
-  // Directly call testing here
-  const testing = () => {
-    console.log("testing");
-  };
-  testing(); // This will log "testing" every time the component re-renders
-
-
-
-
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    // Fetch username from the current URL
+    const getUsernameFromUrl = () => {
+      const currentUrl = window.location.pathname;
+      const parts = currentUrl.split('/');
+      if (parts.length >= 3) {
+        setUsername(parts[2]);
+      }
+    };
+
+    getUsernameFromUrl();
+  }, []);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -32,8 +34,7 @@ const FriendPage: React.FC = () => {
       if (response.ok) {
         const newUserId = data.newUserId;
         // Redirect to the new URL with the user ID and name
-        const currentUrl = window.location.pathname;
-        window.location.href = `/friend/${currentUrl.split('/')[2]}/${newUserId}/?name=${encodeURIComponent(name)}`;
+        window.location.href = `/friend/${username}/${newUserId}/?name=${encodeURIComponent(name)}`;
       } else {
         console.error('Error:', data.error);
       }
@@ -42,19 +43,25 @@ const FriendPage: React.FC = () => {
     }
   };
 
-
   return (
-    <div className="container">
-      <h1>💌 You've been invited to fairShare!</h1>
-      <p>Enter your name 📝</p>
+    <div className="text-center max-w-lg p-8 bg-white rounded-lg shadow-lg">
+<h1 className="text-3xl mb-6">💌 You've been invited to <span className="text-light-blue-800 font-medium">{username ? `${username}` : ''}</span>'s fairShare!</h1>
+<p className="text-lg mb-4">Enter your name 📝</p>
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
         onKeyPress={handleKeyPress} // Handle Enter key press
         placeholder="John Doe 🫡"
+        className="w-full p-3 text-lg mb-4 border rounded outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
       />
-      <button onClick={handleJoin}>Join</button>
+
+      <button
+        onClick={handleJoin}
+        className="py-3 px-6 text-lg bg-gray-800 text-white rounded hover:bg-gray-700"
+      >
+        Join
+      </button>
     </div>
   );
 };

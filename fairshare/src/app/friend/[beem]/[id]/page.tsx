@@ -153,7 +153,7 @@ const FriendPage: React.FC = () => {
   }, 0);
 
   return (
-    <div style={{ maxHeight: '90vh', overflowY: 'visible', minWidth: '170vh'}}>
+    <div style={{ maxHeight: '90vh', overflowY: 'visible', overflowX: 'auto' }}>
       <div className="container w-full mx-auto p-4 border rounded-lg shadow-lg bg-gray-100">
         <h1 className="text-3xl mb-4 text-gray-800">Hello, {name} 👋</h1>
         <h3 className="text-xl mb-4 text-gray-600">Select your order below</h3>
@@ -166,26 +166,25 @@ const FriendPage: React.FC = () => {
             </li>
             {receiptData.map((item, index) => (
               <li key={index} style={{ background: getItemBackgroundColor(item) }} className="rounded-lg overflow-hidden shadow-sm mb-4">
-                <div style={{ background: getItemBackgroundColor(item) }} className={`px-4 py-4 sm:px-6 ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}>
-                  <div className="flex items-center">
+              <div style={{ background: getItemBackgroundColor(item) }} className={`px-4 py-4 sm:px-6 ${index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}`}>
+                <div className="flex items-center">
                     <div className="w-1/3">
                       <p>{item.item_name}</p>
                     </div>
                     <div className="w-1/3 text-center">
-                      <p>{item.item_count}x (${item.items_price.toFixed(2)})</p>
+                      <p>{item.item_count} · ${(item.items_price/item.item_count).toFixed(2)}</p>
                     </div>
                     <div className="w-1/3 flex items-center justify-center">
                       <span className="mr-2">${((item.items_price / item.item_count) * selectedItems[item.item_name]).toFixed(2)}</span>
                       <button
-                        className={`btn-decrement px-3 py-1 rounded-lg mr-2 text-2xl ${selectedItems[item.item_name] <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
+                        className={`btn-decrement px-3 py-1 rounded-lg mr-2 text-2xl ${selectedItems[item.item_name] <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700 text-white'} shadow-lg`}
                         onClick={() => handleDecrement(item.item_name)}
                         disabled={selectedItems[item.item_name] <= 0}
                       >
                         -
                       </button>
-                      <span>{selectedItems[item.item_name]}</span>
                       <button
-                        className={`btn-increment px-3 py-1 rounded-lg ml-2 text-2xl ${calculateAllocationPercentage(item) >= 100 ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
+                        className={`btn-increment px-3 py-1 rounded-lg ml-2 text-2xl ${calculateAllocationPercentage(item) >= 100 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700 text-white'} shadow-lg`}
                         onClick={() => handleIncrement(item.item_name)}
                         disabled={calculateAllocationPercentage(item) >= 100}
                       >
@@ -196,21 +195,17 @@ const FriendPage: React.FC = () => {
                 </div>
               </li>
             ))}
-            <li className="flex justify-between items-center border-t pt-4 mt-4">
-              <div>
-                <Link className="button bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg" href="/friend" passHref>
-                  ⬅ Go back
+            <span className="mb-2 sm:mb-0 flex justify-end font-bold">💰 Your Total: ${receiptData.reduce((total, item) => total + ((item.items_price / item.item_count) * selectedItems[item.item_name]), 0).toFixed(2)}</span>
+              <li className="flex justify-between items-center border-t pt-4 mt-4">
+                <Link className="button px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white" href={`/friend/${userName}`} passHref>
+                  ⬅ Back
                 </Link>
-              </div>
-              <div className="flex-1 text-right text-lg font-bold text-gray-800">
-                <span className="mr-4">💰 Your Total: ${receiptData.reduce((total, item) => total + ((item.items_price / item.item_count) * selectedItems[item.item_name]), 0).toFixed(2)}</span>
-              </div>
               <Link
                 href={`https://beem.com.au/app/pay?amount=${receiptData.reduce((total, item) => total + ((item.items_price / item.item_count) * selectedItems[item.item_name]), 0) * 100}&handle=${userName}&description=${name}'s part of the receipt`}
                 passHref
               >
                 <button
-                  className={`button px-4 py-2 rounded-lg ${totalAmount === 0 ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600 text-white'}`}
+                  className={`button px-4 py-2 rounded-lg font-bold ${totalAmount === 0 ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600 text-white'}`}
                   disabled={totalAmount === 0}
                 >
                   Beem {userName}
@@ -224,6 +219,7 @@ const FriendPage: React.FC = () => {
       </div>
     </div>
   );
+  
 }  
 
 export default FriendPage;

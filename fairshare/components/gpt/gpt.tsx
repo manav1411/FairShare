@@ -47,12 +47,13 @@ const GPT: React.FC<GPTProps> = ({ image, onResult }) => {
                 ],
               }
             ],
-            max_tokens: 150,
+            max_tokens: 1500,
           })
         };
 
         const res = await fetch(url, requestOptions);
         const data = await res.json();
+        console.log(data)
 
         // Parse the response into the appropriate format
         if (data.choices && data.choices.length > 0) {

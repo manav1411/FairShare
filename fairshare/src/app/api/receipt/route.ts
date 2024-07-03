@@ -29,9 +29,15 @@ export async function GET() {
 // POST: Update receipt data
 export async function POST(request: Request) {
   try {
-    // Delete all existing data from the 'receipts' table
-    const { error: deleteError } = await supabase.from('receipts').delete().neq("item_name", 0)
-    if (deleteError) throw deleteError;
+    // Delete all existing data from all tables
+    const { error: deleteError1 } = await supabase.from('receipts').delete().neq("item_name", 0)
+    if (deleteError1) throw deleteError1;
+    const { error: deleteError2 } = await supabase.from('allocations').delete().neq("user_id", 0)
+    if (deleteError2) throw deleteError2;
+    const { error: deleteError3 } = await supabase.from('users').delete().neq("id", 0)
+    if (deleteError3) throw deleteError3;
+
+
 
     // Insert new data provided in the request body
     const givenData = await request.json();

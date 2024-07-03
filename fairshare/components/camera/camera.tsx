@@ -53,11 +53,12 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
         context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
         const imageData = canvasRef.current.toDataURL('image/png');
         setCapturedImage(imageData);
-        setIsCameraActive(false);
-        stopCamera();
+        setIsCameraActive(false); // Turn off the camera
+        stopCamera(); // Stop the camera stream
       }
     }
   };
+  
 
   const handleRetake = () => {
     setCapturedImage(null);
@@ -72,6 +73,54 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
     }
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCameraActive(false); // Turn off the camera
+    stopCamera(); // Stop the camera stream
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type === 'image/png' || file.type === 'image/jpeg') {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageData = e.target?.result as string;
+          setCapturedImage(imageData);
+          setIsCameraActive(false);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        console.error('Invalid file type. Please select PNG or JPEG.');
+      }
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    setIsCameraActive(false); // Turn off the camera
+    stopCamera(); // Stop the camera stream
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      if (file.type === 'image/png' || file.type === 'image/jpeg') {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageData = e.target?.result as string;
+          setCapturedImage(imageData);
+          setIsCameraActive(false); // Turn off the camera
+          stopCamera(); // Stop the camera stream
+        };
+        reader.readAsDataURL(file);
+      } else {
+        console.error('Invalid file type. Please drop PNG or JPEG.');
+      }
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
   if (!isClient) {
     return null; // Render nothing on the server
   }
@@ -79,29 +128,74 @@ const Camera: React.FC<CameraProps> = ({ children, onImageCapture }) => {
   return (
     <div className="flex flex-col items-center">
       {children && <div className="mb-4">{children}</div>}
-      <div className="relative w-full max-w-full">
+      <div
+        className="relative w-full max-w-full"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+      >
         {isCameraActive ? (
           <video ref={videoRef} autoPlay className="w-full rounded-md shadow-2xl" />
         ) : (
           capturedImage && <img src={capturedImage} alt="Captured" className="w-full rounded-md shadow-2xl" />
         )}
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-0" />
+        <input
+          type="file"
+          accept="image/png, image/jpeg"
+          onChange={handleFileUpload}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+        <div
+          className="absolute inset-0 w-full h-full cursor-pointer"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+        />
       </div>
       <div className="flex mt-4 space-x-4">
         {isCameraActive ? (
-          <button className=" text-2xl bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
-            onClick={handleCapture}>Capture 📸</button>
+          <>
+            <button
+              className="text-2xl bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
+              onClick={handleCapture}
+            >
+              Capture 📸
+            </button>
+            <label className="text-2xl bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl cursor-pointer">
+              Upload 📁
+              <input
+                type="file"
+                accept="image/png, image/jpeg"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+          </>
         ) : (
           <>
-            <button className="text-2xl bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
-              onClick={handleRetake}>Retake</button>
-            <button className="text-2xl bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
-              onClick={handleContinue}>Continue</button>
+            <button
+              className="text-2xl bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
+              onClick={handleRetake}
+            >
+              Retake❌
+            </button>
+            <button
+              className="text-2xl bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow-2xl"
+              onClick={handleContinue}
+            >
+              Continue⚡
+            </button>
           </>
         )}
       </div>
+      {/* Drag and drop text outside the button container */}
+      <div className="flex items-center justify-center text-gray-600 text-lg mt-4">
+        Drag and drop images here
+      </div>
     </div>
   );
+  
 };
 
 export default Camera;

@@ -27,6 +27,11 @@ const Home: React.FC = () => {
   const [finalResult, setFinalResult] = useState<ReceiptItem[] | null>(null);
   const [allocations, setAllocations] = useState<Allocation[]>([]);
   const [beemName, setBeemName] = useState<string>('');
+  const [showQR, setShowQR] = useState(true); // State to control visibility of QR code
+
+  const toggleQRVisibility = () => {
+    setShowQR((prevShowQR) => !prevShowQR); // Toggle showQR state
+  };
 
   useEffect(() => {
     if (finalResult) {
@@ -85,59 +90,154 @@ const Home: React.FC = () => {
     }
   };
 
+  const calculateUserAllocations = () => {
+    const userAllocations: { [key: number]: { name: string; claimed: number } } = {};
+  
+    allocations.forEach((allocation) => {
+      const userId = allocation.user_id;
+      const userName = allocation.users.name;
+  
+      const claimedAmount = allocation.items_allocated.reduce((acc, alloc) => {
+        const item = finalResult?.find((item) => item.item_name === alloc.item_name);
+        if (item) {
+          acc += (item.items_price / item.item_count) * alloc.item_count;
+        }
+        return acc;
+      }, 0);
+  
+      if (claimedAmount > 0) {
+        if (userAllocations[userId]) {
+          userAllocations[userId].claimed += claimedAmount;
+        } else {
+          userAllocations[userId] = { name: userName, claimed: claimedAmount };
+        }
+      }
+    });
+  
+    return Object.values(userAllocations);
+  };
+  
+
   const getItemListDisplay = () => {
     if (finalResult) {
+      // Calculate total amount owed
+      let totalOwed:any = 0;
+      finalResult.forEach((item) => {
+        const allocatedUsers = allocations.filter((allocation) =>
+          allocation.items_allocated.some((alloc) => alloc.item_name === item.item_name)
+        );
+  
+        const totalAllocatedCount = allocatedUsers.reduce((acc, allocation) => {
+          const alloc = allocation.items_allocated.find((alloc) => alloc.item_name === item.item_name);
+          return acc + (alloc ? alloc.item_count : 0);
+        }, 0);
+  
+        totalOwed += parseFloat((item.items_price - (item.items_price / item.item_count) * totalAllocatedCount).toFixed(2));
+      });
+  
       return (
-        <div className="bg-white shadow rounded-lg p-4">
-          <div className="flex justify-between items-center mb-4">
-            <span className="font-bold text-lg">Item List</span>
-            <span className="font-bold text-lg text-red-500">You Owe</span>
+        <div>
+          <div className="flex justify-end mb-0">
+            <button
+              type="button"
+              className="relative inline-flex items-center px-5 py-1 text-xs font-medium text-center text-white bg-gray-800 rounded-t-lg"
+            >
+              LIVE
+              <div className="absolute inline-flex items-center justify-center w-6 h-6 text-2xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900 animate-ping"></div>
+            </button>
           </div>
-          <ul className="divide-y divide-gray-200">
-            {finalResult.map((item, index) => {
-              const allocatedUsers = allocations.filter(allocation =>
-                allocation.items_allocated.some(alloc => alloc.item_name === item.item_name)
-              );
+  
+          <div className="bg-gray-300 rounded-t-lg mb-0"></div>
+  
+          <div className="bg-white shadow-xl rounded-tl-lg rounded-b-lg p-4">
+            <div className="flex justify-between items-center mb-4">
+              <span className="font-bold text-lg">Item List</span>
+              <span className="font-bold text-lg text-red-500"></span>
+            </div>
+            <ul className="divide-y divide-gray-200">
+              {finalResult.map((item, index) => {
+                const allocatedUsers = allocations.filter((allocation) =>
+                  allocation.items_allocated.some((alloc) => alloc.item_name === item.item_name)
+                );
+  
+                const totalAllocatedCount = allocatedUsers.reduce((acc, allocation) => {
+                  const alloc = allocation.items_allocated.find((alloc) => alloc.item_name === item.item_name);
+                  return acc + (alloc ? alloc.item_count : 0);
+                }, 0);
+  
+                const totalOwed = (
+                  item.items_price -
+                  (item.items_price / item.item_count) * totalAllocatedCount
+                ).toFixed(2);
+  
+                // Determine the class based on the totalOwed value
+                const moneyTextClass = parseFloat(totalOwed) === 0 ? 'text-gray-500' : 'text-red-500 font-normal';
+  
+                return (
+                  <li key={index} className="py-4 flex justify-between items-center">
+                    <div>
+                      <span className="font-normal text-lg">{item.item_name}</span>
+                      <span className="ml-2 text-gray-500">
+                        {item.item_count} · ${(item.items_price / item.item_count).toFixed(2)}
+                      </span>
+                    </div>
+                    <ul className="divide-y divide-gray-200 bg-gray-50 p-2 rounded-lg">
+                      {allocatedUsers.map((allocation, idx) => (
+                        <li key={idx} className="py-2">
+                          <span className="text-sm text-gray-600">
+                            {allocation.users.name}:{' '}
+                            {allocation.items_allocated.find((alloc) => alloc.item_name === item.item_name)?.item_count ||
+                              0}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <span className={`ml-2 ${moneyTextClass}`}>${totalOwed}</span>
+                  </li>
+                );
+              })}
+              {/* Your Total row */}
+              <li className="py-4 flex justify-between items-center">
+                <span className="font-bold text-lg">Your Total</span>
+                <span className={`font-bold text-lg ${parseFloat(totalOwed) === 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  ${totalOwed.toFixed(2)}
+                </span>
 
-              const totalAllocatedCount = allocatedUsers.reduce((acc, allocation) => {
-                const alloc = allocation.items_allocated.find(alloc => alloc.item_name === item.item_name);
-                return acc + (alloc ? alloc.item_count : 0);
-              }, 0);
-
-              const totalOwed = (item.items_price - (item.items_price / item.item_count) * totalAllocatedCount).toFixed(2)
-
-              return (
-                <li key={index} className="py-4 flex justify-between items-center">
-                  <div>
-                    <span className="font-normal text-lg">{item.item_name}</span>
-                    <span className="ml-2 text-gray-500">{item.item_count}x (${item.items_price.toFixed(2)})</span>
-                  </div>
-                  <ul className="divide-y divide-gray-200 bg-gray-50 p-2 rounded-lg">
-                    {allocatedUsers.map((allocation, idx) => (
-                      <li key={idx} className="py-2">
-                        <span className="text-sm text-gray-600">
-                          {allocation.users.name}: {allocation.items_allocated.find(alloc => alloc.item_name === item.item_name)?.item_count || 0}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  <span className="ml-2 text-red-500 font-normal">${totalOwed}</span>
-                </li>
-              );
-            })}
-          </ul>
+              </li>
+            </ul>
+          </div>
         </div>
       );
     }
     return null;
   };
+  
 
-  const qrCodeUrl = `https://www.fairshared.me/${encodeURIComponent(beemName)}/`;
+  const getUserAllocationsDisplay = () => {
+    const userAllocations = calculateUserAllocations();
+    return (
+      <div className="bg-white shadow-xl rounded-t rounded-br p-4 mt-4">
+        <div className="flex justify-between items-center mb-4">
+          <span className="font-bold text-lg">Friends Pay</span>
+        </div>
+        <ul className="divide-y divide-gray-200">
+          {userAllocations.map((allocation, index) => (
+            <li key={index} className="py-4 flex justify-between items-center">
+              <span className="font-normal text-lg">{allocation.name}</span>
+              <span className="font-normal text-lg text-green-700">${allocation.claimed.toFixed(2)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const qrCodeUrl = `https://www.fairshared.me/friend/${encodeURIComponent(beemName)}/`;
 
   return (
     <div className="min-h-screen display: inline-block flex-col items-center justify-center p-6 max-h-screen overflow-y-auto ">
       {!capturedImage ? (
-        <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-lg">
+        <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-lg">
           <Camera onImageCapture={handleImageCapture}>
             <h1 className="text-4xl font-bold mb-4 text-center">Welcome to FairShare 👋</h1>
             <h2 className="text-xl text-center text-gray-600">Scan receipt to get started...</h2>
@@ -146,14 +246,25 @@ const Home: React.FC = () => {
       ) : finalResult ? (
         <div>
           {getItemListDisplay()}
-          <div className="mt-6">
-            <QR link={qrCodeUrl} />
+          {getUserAllocationsDisplay()}
+          <div className="flex flex-col items-start justify-center">
+            <button
+              className="btn-toggle bg-gray-800 hover:bg-gray-400 text-white font-bold py-1 px-2 rounded-b"
+              onClick={toggleQRVisibility}
+            >
+              {showQR ? 'Hide QR Code' : 'Show QR Code'}
+            </button>
+            {showQR && (
+              <div className="mt-6">
+                <QR link={qrCodeUrl} />
+              </div>
+            )}
           </div>
         </div>
       ) : (
         <div className="w-full max-w-2xl">
           <GPT
-            image="https://qph.cf2.quoracdn.net/main-qimg-9546e75b61c21afe8d6d9f2b58a5e752-lq"
+            image={capturedImage}
             onResult={handleGPTResult}
           />
           <Editor items={gptResult} setItems={setGptResult} onClose={handleEditorClose} />

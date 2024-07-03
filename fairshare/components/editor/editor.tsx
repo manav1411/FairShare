@@ -93,8 +93,11 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">Loading...</div>
+      <div className="fixed inset-0 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <div className="text-2xl">Loading</div> {/* Loading text */}
+          <div className="h-5 w-5 bg-blue-500 rounded-full animate-ping"></div>
+        </div>
       </div>
     );
   }
@@ -117,9 +120,15 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
               className="w-1/2 flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
             <div className="flex items-center mr-2 ml-2">
-              <button onClick={() => handleDecrement(index)} className="btn-decrement px-3 py-1 rounded-lg text-2xl p-2 bg-blue-500 text-white hover:bg-blue-600">-</button>
+              <button
+                onClick={() => handleDecrement(index)}
+                className={`px-3 py-1 rounded-lg text-2xl p-2 ${item.item_count === 1 ? 'bg-gray-400 text-gray-300 cursor-not-allowed' : 'bg-gray-800 text-white hover:bg-gray-700'}`}
+                disabled={item.item_count === 1}
+              >
+                -
+              </button>
               <span className="mx-2">{item.item_count}</span>
-              <button onClick={() => handleIncrement(index)} className="btn-decrement px-3 py-1 text-2xl p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">+</button>
+              <button onClick={() => handleIncrement(index)} className="btn-decrement px-3 py-1 text-2xl p-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">+</button>
             </div>
   
             <input
@@ -129,20 +138,30 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
               onChange={(e) => handlePriceChange(index, parseFloat(e.target.value))}
               className="min-w-0.5 flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
             />
-            <button onClick={() => handleDeleteItem(index)} className="p-2 ml-2 bg-red-500 text-white rounded-md hover:bg-red-600">Delete</button>
+            <button onClick={() => handleDeleteItem(index)} className="p-2 ml-2 bg-transparent text-white rounded-md hover:bg-gray-300">❌</button>
           </li>
         ))}
       </ul>
+
       <div className="flex mt-4 justify-between">
-        <button onClick={handleAddItem} className="p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add Item</button>
-        <input
-          type="text"
-          value={beemName}
-          onChange={(e) => setBeemName(e.target.value)}
-          placeholder="Enter your Beem"
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-        />
-        <button onClick={handleSave} disabled={!beemName} className={`p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 ${!beemName && 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'}`} title={!beemName ? "Please enter your Beem name to continue" : ""}>Continue</button>
+        <button onClick={handleAddItem} className="p-3 bg-gray-800 text-white rounded-md hover:bg-gray-700">Add Item</button>
+          <div className="flex justify-center">
+          <input
+            type="text"
+            value={beemName}
+            onChange={(e) => setBeemName(e.target.value)}
+            placeholder="Enter your Beem"
+            className="w-full md:w-auto flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 text-center max-w-44"
+          />
+        </div>
+        <button 
+          onClick={handleSave} 
+          disabled={!beemName} 
+          className={`p-3 ${beemName ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-400 hover:bg-gray-400 cursor-not-allowed'} text-white rounded-md`} 
+          title={!beemName ? "Please enter your Beem name to continue" : ""}
+        >
+          Continue
+        </button>
       </div>
     </div>
   );
