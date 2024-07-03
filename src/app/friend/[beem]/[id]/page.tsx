@@ -153,7 +153,7 @@ const FriendPage: React.FC = () => {
   }, 0);
 
   return (
-    <div style={{ maxHeight: '90vh', overflowY: 'visible', overflowX: 'auto' }}>
+    <div style={{ maxHeight: '100vh', overflowY: 'visible', overflowX: 'auto' }}>
       <div className="container w-full mx-auto p-4 border rounded-lg shadow-lg bg-gray-100">
         <h1 className="text-3xl mb-4 text-gray-800">Hello, {name} 👋</h1>
         <h3 className="text-xl mb-4 text-gray-600">Select your order below</h3>

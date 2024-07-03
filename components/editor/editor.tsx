@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import Axios for making HTTP requests
+import axios from 'axios';
 
 interface Item {
   item_name: string;
   item_count: number;
-  items_price: number; // New field for item price
+  items_price: number;
 }
 
 interface EditorProps {
   items: Item[];
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
-  onClose: (finalResult: Item[], beemName: string) => void; // Callback to close editor and pass final result and beem_name
+  onClose: (finalResult: Item[], beemName: string) => void;
 }
 
 const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
@@ -19,12 +19,13 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
 
   // Simulate loading effect with useEffect
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000); // Simulate loading time
-
-    return () => clearTimeout(timer);
-  }, []);
+    // Check if items are empty to determine loading state
+    if (items.length === 0) {
+      setLoading(true); // Set loading to true if items are empty
+    } else {
+      setLoading(false); // Set loading to false if items are not empty
+    }
+  }, [items]); // Run effect whenever items change
 
   const handleNameChange = (index: number, newName: string) => {
     const updatedItems = [...items];
@@ -67,7 +68,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   const handlePriceChange = (index: number, newPrice: number) => {
     const updatedItems = [...items];
     // Round price to 2 decimal places
-    updatedItems[index].items_price = Math.round(newPrice * 100) / 100; // Round to 2 decimal places
+    updatedItems[index].items_price = Math.round(newPrice * 100) / 100;
     setItems(updatedItems);
   };
 
@@ -84,7 +85,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
   const handleSave = async () => {
     try {
       const response = await axios.post('/api/receipt', items);
-      onClose(items, beemName); // Pass the final items array and beem_name to the onClose callback
+      onClose(items, beemName);
     } catch (error) {
       console.log('Error saving receipt:', error);
       // Handle error as needed
@@ -95,7 +96,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="flex items-center space-x-2">
-          <div className="text-2xl">Loading</div> {/* Loading text */}
+          <div className="text-2xl">Loading</div>
           <div className="h-5 w-5 bg-blue-500 rounded-full animate-ping"></div>
         </div>
       </div>
@@ -145,7 +146,7 @@ const Editor: React.FC<EditorProps> = ({ items, setItems, onClose }) => {
 
       <div className="flex mt-4 justify-between">
         <button onClick={handleAddItem} className="p-3 bg-gray-800 text-white rounded-md hover:bg-gray-700">Add Item</button>
-          <div className="flex justify-center">
+        <div className="flex justify-center">
           <input
             type="text"
             value={beemName}
