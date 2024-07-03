@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+FairShare is industry-ready and functional 🥳
+visit: [fairshared.me] to try it out.
 
-## Getting Started
 
-First, run the development server:
+alternatively, to run locally:
+`cd fairshare`
+`npm i`
+`npm run dev`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#Tech Stack
+Hosting: Vercel, namecheap (domain name)
+Frontend: TSX, React, Next.js, TailwindCSS
+Backend: Node.js (via Node.js)
+database: Supabase
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#Functionality
+## Initialisation
+3 options to upload images: 
+- camera
+- upload (sanatised to only accept jpg/png)
+- drag and drop (sanatised to only accept jpg/png)
+ability to retake
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Analysis
+while loading screen, image sent to gpt-4o.
+OpenAI sends analysed result as JSON.
 
-## Learn More
+## Editing
+for each item, Name, Quantity, Price automatically written (all editable)
+Ability to delete/add items
+Quantity sanatised to be >1, Price sanatised to be number >0 to 2dp
+User's beem required to proceed
 
-To learn more about Next.js, take a look at the following resources:
+## Main User View
+A live view list of items with items/quantity friends have assigned themselves
+automatically calculated user's still-owing amounts
+seperate section calculating how much each friend owes
+hideable QR code section, with a copy-able link alternative
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Friend View
+page for main-user specific friend, input to enter name.
+Can click 'enter' button to join too.
+live view to select claims.
+smart 'your part' - only allowing remaining number of available items to be selected. 
+automatically calculated friend total
+deep-link button to Beem main user.
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+# Cool Tech Used
+SupaBase real-time database, to give live updates to main user and friends
+
+
+# Styling
+Followed tailwind CSS guides, with animations.
+used drop shadows, minimal black/white, certain colour highlights (e.g. pay)
+
+
+
+
