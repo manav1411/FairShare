@@ -1,20 +1,27 @@
 FairShare is industry-ready and functional 🥳
-visit: [fairshared.me] to try it out.
+visit: [fairshared.me](https://fairshared.me) to try it out.
 
 
 alternatively, to run locally:
-`cd fairshare`
-`npm i`
-`npm run dev`
+```
+cd fairshare
+npm i
+npm run dev
+```
 
 
-#Tech Stack
+# Tech Stack
 Hosting: Vercel, namecheap (domain name)
 Frontend: TSX, React, Next.js, TailwindCSS
 Backend: Node.js (via Node.js)
 database: Supabase
 
-#Functionality
+# Cool Tech Used
+SupaBase real-time database, to give live updates to main user and friends
+
+
+
+# Functionality
 ## Initialisation
 3 options to upload images: 
 - camera
@@ -25,6 +32,10 @@ ability to retake
 ## Analysis
 while loading screen, image sent to gpt-4o.
 OpenAI sends analysed result as JSON.
+
+# Styling
+Followed tailwind CSS guides, with animations.
+used drop shadows, minimal black/white, certain colour highlights (e.g. pay)
 
 ## Editing
 for each item, Name, Quantity, Price automatically written (all editable)
@@ -50,15 +61,5 @@ deep-link button to Beem main user.
 
 
 
-
-# Cool Tech Used
-SupaBase real-time database, to give live updates to main user and friends
-
-
-# Styling
-Followed tailwind CSS guides, with animations.
-used drop shadows, minimal black/white, certain colour highlights (e.g. pay)
-
-
-
-
+## GPT Prompt we used:
+This is meant to be an image of a receipt. For each item, can you extract the name, the number of items, and the price in format: {"item_name": "garlic bread", "item_count": 2, "items_price": 16.5}, and return all such items in an array. E.g. [{"item_name": "garlic bread", "item_count": 2, "items_price": 12.95}, {"item_name": "coke", "item_count": 4, "items_price": 32}, {"item_name": "Iced Tea", "item_count": 1, "items_price": 8}]. Make the Items capitalise the first letter from each word only. Return no other text. Only in 1 line. Ignore all non-item text. ONLY return the array. Absolutely no other text. If you cannot see any text, please return empty.'
