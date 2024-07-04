@@ -174,16 +174,16 @@ const FriendPage: React.FC = () => {
                       <p>{item.item_count} · ${(item.items_price/item.item_count).toFixed(2)}</p>
                     </div>
                     <div className="w-1/3 flex items-center justify-center">
-                      <span className="mr-2">${((item.items_price / item.item_count) * selectedItems[item.item_name]).toFixed(2)}</span>
                       <button
-                        className={`btn-decrement px-3 py-1 rounded-lg mr-2 text-2xl ${selectedItems[item.item_name] <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700 text-white'} shadow-lg`}
+                        className={`btn-decrement px-3 py-1 rounded-lg mr-1 text-2xl ${selectedItems[item.item_name] <= 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700 text-white'} shadow-lg`}
                         onClick={() => handleDecrement(item.item_name)}
                         disabled={selectedItems[item.item_name] <= 0}
                       >
                         -
                       </button>
+                      <span className="">{( selectedItems[item.item_name])}</span>
                       <button
-                        className={`btn-increment px-3 py-1 rounded-lg ml-2 text-2xl ${calculateAllocationPercentage(item) >= 100 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700 text-white'} shadow-lg`}
+                        className={`btn-increment px-3 py-1 rounded-lg ml-1 text-2xl ${calculateAllocationPercentage(item) >= 100 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-700 text-white'} shadow-lg`}
                         onClick={() => handleIncrement(item.item_name)}
                         disabled={calculateAllocationPercentage(item) >= 100}
                       >
@@ -203,12 +203,17 @@ const FriendPage: React.FC = () => {
                 href={`https://beem.com.au/app/pay?amount=${receiptData.reduce((total, item) => total + ((item.items_price / item.item_count) * selectedItems[item.item_name]), 0) * 100}&handle=${userName}&description=${name}'s part of the receipt`}
                 passHref
               >
-                <button
-                  className={`button px-4 py-2 rounded-lg font-bold ${totalAmount === 0 ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600 text-white'}`}
-                  disabled={totalAmount === 0}
-                >
-                  Beem {userName}
-                </button>
+              <button
+                className={`button px-4 py-2 rounded-lg font-bold ${
+                  totalAmount === 0
+                    ? 'bg-gray-500 text-gray-400 shadow-lg shadow-gray-400 cursor-not-allowed'
+                    : 'bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-400'
+                }`}
+                disabled={totalAmount === 0}
+              >
+                Beem {userName}
+              </button>
+
               </Link>
             </li>
           </ul>
