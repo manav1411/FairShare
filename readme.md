@@ -34,8 +34,8 @@ npm run dev
 ability to retake
 
 ## Analysis
-while loading screen, image sent to gpt-4o.
-OpenAI sends analysed result as JSON.
+while loading screen, image analysed in the background by API.
+after analysis, result sent back as JSON.
 
 # Styling
 Followed tailwind CSS guides, with animations.
@@ -61,9 +61,3 @@ live view to select claims.
 smart 'your part' - only allowing remaining number of available items to be selected. 
 automatically calculated friend total
 deep-link button to Beem main user.
-
-
-
-
-## GPT Prompt we used:
-This is meant to be an image of a receipt. For each item, can you extract the name, the number of items, and the price in format: {"item_name": "garlic bread", "item_count": 2, "items_price": 16.5}, and return all such items in an array. E.g. [{"item_name": "garlic bread", "item_count": 2, "items_price": 12.95}, {"item_name": "coke", "item_count": 4, "items_price": 32}, {"item_name": "Iced Tea", "item_count": 1, "items_price": 8}]. Make the Items capitalise the first letter from each word only. Return no other text. Only in 1 line. Ignore all non-item text. ONLY return the array. Absolutely no other text. If you cannot see any text, please return empty.'
