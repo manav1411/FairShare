@@ -9,10 +9,10 @@ npm run dev
 ```
 
 # Demo
-### User POV:
+User POV:
 ![temp](https://github.com/user-attachments/assets/f8582c43-c51e-498d-9e72-c7a3ef09ddb6)
 
-### User's Friends POV:
+User's Friends POV:
 ![temp2](https://github.com/user-attachments/assets/01eb825e-1a53-4ab2-abca-16e8a055cb1a)
 
 
