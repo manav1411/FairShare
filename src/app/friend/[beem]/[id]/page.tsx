@@ -200,8 +200,8 @@ const FriendPage: React.FC = () => {
                   ⬅ Back
                 </Link>
               <Link
-                href={`https://beem.com.au/app/pay?amount=${receiptData.reduce((total, item) => total + ((item.items_price / item.item_count) * selectedItems[item.item_name]), 0) * 100}&handle=${userName}&description=${name}'s part of the receipt`}
-                passHref
+href={`https://beem.com.au/app/pay?amount=${Math.round(receiptData.reduce((total, item) => total + ((item.items_price / item.item_count) * selectedItems[item.item_name]), 0) * 100)}&handle=${userName}&description=${name}'s part of the receipt`}
+passHref
               >
               <button
                 className={`button px-4 py-2 rounded-lg font-bold ${
