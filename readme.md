@@ -1,5 +1,17 @@
-FairShare is industry-ready and functional 🥳
+![Beem AI Hack Presentation](https://github.com/user-attachments/assets/db3c01fa-06a4-4c01-9db4-04eb5455a216)FairShare is industry-ready and functional 🥳
 visit: [fairshared.me](https://fairshared.me) to try it out.
+
+
+# Demo
+### User POV:
+![temp](https://github.com/user-attachments/assets/f8582c43-c51e-498d-9e72-c7a3ef09ddb6)
+
+
+### User's Friends POV:
+![temp2](https://github.com/user-attachments/assets/01eb825e-1a53-4ab2-abca-16e8a055cb1a)
+
+
+
 
 
 alternatively, to run locally:
