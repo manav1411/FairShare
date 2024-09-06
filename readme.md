@@ -1,21 +1,22 @@
-FairShare is industry-ready and functional 🥳
-visit: [fairshared.me](https://fairshared.me) to try it out.
+# Purpose
+1. FairShare is a tool to make sharing the bill with friends easier. A small, seamless service.
+2. you simply take a photo of your reciept, and ask your friends to fill in their order.
 
-alternatively, to run locally:
-```
-cd fairshare
-npm i
-npm run dev
-```
+To try out FairShare, visit: [fairshared.me](https://fairshared.me).
 
-# Demo
+# Screenshots
 User POV:
 ![temp](https://github.com/user-attachments/assets/f8582c43-c51e-498d-9e72-c7a3ef09ddb6)
 
 User's Friends POV:
 ![temp2](https://github.com/user-attachments/assets/01eb825e-1a53-4ab2-abca-16e8a055cb1a)
 
-
+## To Run Locally:
+```
+cd fairshare
+npm i
+npm run dev
+```
 
 # Tech Stack
 - Hosting: Vercel, namecheap (domain name)
